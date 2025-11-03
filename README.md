@@ -18,5 +18,5 @@ To run the app locally, just open the HTML file in your browser
 
 ```bash
 # Clone the repository
-git clone https://github.com/kizveux/Orange-s-Note.git
+git clone https://kizveux.github.io/Orange-s-Note/
 cd Orange-s-Note
