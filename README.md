@@ -18,5 +18,5 @@ To run the application, simply open the HTML file in any modern web browser.
 
 ### Clone the repository
 ```bash
-git clone https://github.com/kizewu/Orange-s-Note.git
+git clone https://github.com/kizveux/Orange-s-Note.git
 cd Orange-s-Note
