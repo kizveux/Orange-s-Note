@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Orange's Notes 🍊</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1: #fff7ed;
+    --bg2: #fff3e0;
+    --accent: #ff8a00;
+    --accent-2: #ffb347;
+    --muted: #6b4f2a;
+    --card: #fffaf0;
+    --glass: rgba(255,255,255,0.6);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:Inter, system-ui, Arial;
+    background: linear-gradient(180deg, var(--bg1), var(--bg2));
+    color:var(--muted);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:28px;
+  }
+
+  .container{
+    width:100%;
+    max-width:1100px;
+    display:grid;
+    grid-template-columns: 1fr 360px;
+    gap:20px;
+  }
+
+  .card{
+    background: linear-gradient(180deg, var(--card), rgba(255,250,245,0.6));
+    border-radius:12px;
+    padding:18px;
+    box-shadow: 0 8px 30px rgba(255,140,0,0.06);
+    border: 1px solid rgba(255,138,0,0.06);
+  }
+
+  header{
+    grid-column: 1 / -1;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:4px;
+  }
+  header h1{
+    margin:0;
+    font-size:20px;
+    color: #823900;
+    display:flex;
+    gap:10px;
+    align-items:center;
+  }
+  header .sub{ color:#9b6a2a; font-size:13px; opacity:0.95; }
+
+  .editor{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  label{ font-size:13px; color:#8a5b2b; }
+  input[type="text"], input[type="date"], textarea{
+    width:100%;
+    padding:10px 12px;
+    border-radius:10px;
+    border:1px solid rgba(139,90,33,0.12);
+    background:transparent;
+    outline:none;
+    font-size:14px;
+    color:var(--muted);
+  }
+  textarea{
+    min-height:220px;
+    resize:vertical;
+  }
+
+  .row{ display:flex; gap:10px; align-items:center; }
+  .row .grow{ flex:1 }
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    background:var(--accent);
+    color:#3b1700;
+    border:none;
+    padding:10px 14px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+    box-shadow:0 6px 18px rgba(255,138,0,0.08);
+  }
+  .btn.ghost{
+    background:transparent;
+    color:var(--accent);
+    border:1px solid rgba(255,138,0,0.16);
+    font-weight:600;
+  }
+  .small{ padding:8px 10px; font-size:13px; }
+
+  .meta{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    color:#a16d31;
+    font-size:13px;
+  }
+  .charcount{ font-size:13px; color:#bf8a4a; }
+
+  .search{
+    display:flex;
+    gap:8px;
+    margin-bottom:12px;
+  }
+  .search input{ flex:1 }
+  .entry-list{ display:flex; flex-direction:column; gap:8px; max-height:520px; overflow:auto; padding-right:6px; }
+  .entry {
+    padding:10px;
+    border-radius:8px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.6), rgba(255,255,255,0.4));
+    border: 1px solid rgba(255,138,0,0.06);
+    cursor:pointer;
+  }
+  .entry h4{ margin:0 0 4px 0; color:#6b3a10; font-size:15px; }
+  .entry p{ margin:0; font-size:13px; color:#7a4f2b; opacity:0.95; max-height:36px; overflow:hidden; text-overflow:ellipsis; }
+
+  .empty { text-align:center; color:#b37a3a; opacity:0.9; padding:18px; border-radius:8px; }
+
+  footer.note{
+    grid-column:1 / -1;
+    margin-top:10px;
+    text-align:center;
+    color:#a67a48;
+    font-size:13px;
+  }
+
+  .orange.emoji {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    font-size: 48px;
+    animation: float 2.5s ease-in-out infinite;
+    cursor: default;
+  }
+
+  .floating-orange {
+    position: absolute;
+    font-size: 36px;
+    animation: float 3s ease-in-out infinite;
+    pointer-events: none;
+    opacity: 0.8;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-25px); }
+    100% { transform: translateY(0px); }
+  }
+
+  @media (max-width:980px){
+    .container{ grid-template-columns:1fr; }
+    header{ flex-direction:column; align-items:flex-start; gap:8px; }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Orange's Notes🍊</h1>
+      <div class="sub"> Make your own notes!</div>
+    </header>
+
+    <div class="card editor">
+      <div>
+        <label for="title">Title</label>
+        <input id="title" type="text" placeholder="Give your note a title!" maxlength="100">
+      </div>
+
+      <div class="row">
+        <div class="grow">
+          <label for="date">Date</label>
+          <input id="date" type="date">
+        </div>
+        <div style="width:150px">
+          <label>&nbsp;</label>
+          <select id="mood" style="width:100%; padding:10px; border-radius:8px; background:transparent; border:1px solid rgba(139,90,33,0.12); color:var(--muted)">
+            <option value="">What’s the vibe today?</option>
+            <option>😊 Happy</option>
+            <option>😐 Neutral</option>
+            <option>😔 Sad</option>
+            <option>🤩 Excited</option>
+            <option>😪 Tired</option>
+            <option>🥰 Loved</option>
+            <option>😡 Angry</option>
+            <option>🤡 Silly</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label for="content">Notes content</label>
+        <textarea id="content" placeholder="Drop your notes here... ✍️"></textarea>
+      </div>
+
+      <div class="meta">
+        <div class="charcount"><span id="chars">0</span> Character</div>
+        <div style="display:flex; gap:8px;">
+          <button id="saveBtn" class="btn">Save</button>
+          <button id="newBtn" class="btn ghost small">New</button>
+          <button id="exportBtn" class="btn ghost small">Export TXT</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <strong style="color:#7a3e0e">Entry</strong>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <input id="filterInput" type="text" placeholder="Search by title or text" style="padding:8px 10px; border-radius:8px; border:1px solid rgba(139,90,33,0.08); background:transparent;">
+          <button id="clearAll" class="btn small ghost">Delete all</button>
+        </div>
+      </div>
+
+      <div id="list" class="entry-list">
+        <div class="empty">Still empty, you go first! 🍊</div>
+      </div>
+    </div>
+
+    <footer class="note">Tip: Export your notes regularly to keep them safe.</footer>
+  </div>
+
+<script>
+(() => {
+  const titleEl = document.getElementById('title');
+  const dateEl = document.getElementById('date');
+  const contentEl = document.getElementById('content');
+  const moodEl = document.getElementById('mood');
+  const saveBtn = document.getElementById('saveBtn');
+  const newBtn = document.getElementById('newBtn');
+  const exportBtn = document.getElementById('exportBtn');
+  const listEl = document.getElementById('list');
+  const charsEl = document.getElementById('chars');
+  const filterInput = document.getElementById('filterInput');
+  const clearAllBtn = document.getElementById('clearAll');
+
+  const STORAGE_KEY = "Orange's Notes";
+  let entries = [];
+  let editingId = null;
+
+  dateEl.valueAsDate = new Date();
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      entries = raw ? JSON.parse(raw) : [];
+    } catch(e){
+      entries = [];
+    }
+  }
+  function saveStorage() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  }
+  function uid() { return 'id_' + Date.now() + '_' + Math.floor(Math.random()*9999); }
+
+  function renderList(filter = '') {
+    listEl.innerHTML = '';
+    const filtered = entries.slice().reverse().filter(e => {
+      if(!filter) return true;
+      const q = filter.toLowerCase();
+      return (e.title && e.title.toLowerCase().includes(q)) || (e.content && e.content.toLowerCase().includes(q));
+    });
+
+    if(filtered.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'empty';
+      empty.textContent = 'Nothing matches your search.';
+      listEl.appendChild(empty);
+      return;
+    }
+
+    filtered.forEach(e => {
+      const el = document.createElement('div');
+      el.className = 'entry';
+      el.innerHTML = `<h4>${escapeHtml(e.title || '(No Title)')} ${e.mood ? '· '+escapeHtml(e.mood):''}</h4>
+                      <p>${escapeHtml(e.content || '').slice(0,200)}</p>
+                      <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end;">
+                        <small style="color:#b0743a">${new Date(e.date).toLocaleDateString()}</small>
+                      </div>`;
+      el.addEventListener('click', ()=> openEntry(e.id));
+      listEl.appendChild(el);
+    });
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, (m)=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[m]);
+  }
+
+  function openEntry(id) {
+    const e = entries.find(x => x.id === id);
+    if(!e) return;
+    editingId = id;
+    titleEl.value = e.title || '';
+    dateEl.value = e.date ? new Date(e.date).toISOString().slice(0,10) : new Date().toISOString().slice(0,10);
+    contentEl.value = e.content || '';
+    moodEl.value = e.mood || '';
+    charsEl.textContent = contentEl.value.length;
+    saveBtn.textContent = 'Update';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function resetForm() {
+    editingId = null;
+    titleEl.value = '';
+    contentEl.value = '';
+    moodEl.value = '';
+    dateEl.valueAsDate = new Date();
+    charsEl.textContent = '0';
+    saveBtn.textContent = 'Save';
+  }
+
+  function addOrUpdate() {
+    const title = titleEl.value.trim();
+    const content = contentEl.value.trim();
+    const date = dateEl.value || new Date().toISOString().slice(0,10);
+    const mood = moodEl.value;
+
+    if(!content && !title) {
+      alert('Add a title or write something first.');
+      return;
+    }
+
+    if(editingId) {
+      const idx = entries.findIndex(x => x.id === editingId);
+      if(idx >= 0) {
+        entries[idx].title = title;
+        entries[idx].content = content;
+        entries[idx].date = date;
+        entries[idx].mood = mood;
+        entries[idx].updatedAt = Date.now();
+      }
+    } else {
+      const entry = {
+        id: uid(),
+        title, content, date, mood,
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+      };
+      entries.push(entry);
+    }
+
+    saveStorage();
+    renderList(filterInput.value);
+    resetForm();
+  }
+
+  function exportTxt() {
+    if (!editingId) {
+      alert("No note is currently opened!");
+      return;
+    }
+
+    const entry = entries.find(e => e.id === editingId);
+    if (!entry) return alert("Entry not found!");
+
+    const txtContent = `
+Title: ${entry.title || '(Untitled)'}
+Date: ${new Date(entry.date).toLocaleDateString()}
+Mood: ${entry.mood || '-'}
+Content:
+${entry.content}
+`;
+
+    const blob = new Blob([txtContent], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${(entry.title || 'note').replace(/[^a-z0-9]/gi, '_')}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function deleteAll() {
+    if(!confirm('Wipe everything? There’s no going back.')) return;
+    entries = [];
+    saveStorage();
+    renderList();
+    resetForm();
+  }
+
+  saveBtn.addEventListener('click', addOrUpdate);
+  newBtn.addEventListener('click', resetForm);
+  exportBtn.addEventListener('click', exportTxt);
+  filterInput.addEventListener('input', ()=> renderList(filterInput.value));
+  clearAllBtn.addEventListener('click', deleteAll);
+  contentEl.addEventListener('input', ()=> charsEl.textContent = contentEl.value.length);
+
+  contentEl.addEventListener('keydown', (e) => {
+    if((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      addOrUpdate();
+    }
+  });
+
+  load();
+  renderList();
+
+  function spawnOranges(count = 12) {
+    for (let i = 0; i < count; i++) {
+      const orange = document.createElement("div");
+      orange.className = "floating-orange";
+      orange.textContent = "🍊";
+
+      const randomX = Math.random() * window.innerWidth;
+      const randomY = Math.random() * window.innerHeight;
+      const randomDuration = 2 + Math.random() * 3;
+
+      orange.style.left = `${randomX}px`;
+      orange.style.top = `${randomY}px`;
+      orange.style.animationDuration = `${randomDuration}s`;
+
+      document.body.appendChild(orange);
+    }
+  }
+
+  spawnOranges(5);
+
+})();
+</script>
+</body>
+</html>
