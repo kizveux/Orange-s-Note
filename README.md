@@ -12,11 +12,11 @@ Orange's Notes is a lightweight journaling web application built using HTML, CSS
 - Responsive layout for desktop and mobile
 - Animated interface for enhanced user experience
 
-## Getting Started
+## Getting Started (Local)
 
-To run the application, simply open the HTML file in any modern web browser.
+To run the app locally, just open the HTML file in your browser
 
-### Clone the repository
 ```bash
+# Clone the repository
 git clone https://github.com/kizveux/Orange-s-Note.git
 cd Orange-s-Note
